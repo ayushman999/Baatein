@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Baatein</string>
+    <string name="profile_desc">Please set your name and an optional profile image</string>
+    <string name="enter_your_name">Enter your name.</string>
 </resources>
