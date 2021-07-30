@@ -1,16 +1,16 @@
-package com.ayushman999.baatein;
+package com.ayushman999.baatein.Activities;
 
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Notification;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.ayushman999.baatein.R;
+import com.ayushman999.baatein.Models.User;
 import com.ayushman999.baatein.databinding.ActivitySetupProfileBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -96,7 +96,7 @@ public class SetupProfileActivity extends AppCompatActivity {
             {
                 String uid=auth.getUid();
                 String phoneNum=auth.getCurrentUser().getPhoneNumber();
-                User user=new User(uid,name,phoneNum,null);
+                User user=new User(uid,name,phoneNum,"no image");
                 database.getReference().child("Users")
                         .child(uid)
                         .setValue(user)

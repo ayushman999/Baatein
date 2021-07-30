@@ -1,4 +1,4 @@
-package com.ayushman999.baatein;
+package com.ayushman999.baatein.Models;
 
 public class User {
     private String uid,name,phoneNum,profileImg;
