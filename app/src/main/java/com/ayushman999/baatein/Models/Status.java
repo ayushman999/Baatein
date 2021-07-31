@@ -4,6 +4,10 @@ public class Status {
     private String imageURL;
     private long timestamp;
 
+    public Status() {
+        //needed
+    }
+
     public Status(String imageURL, long timestamp) {
         this.imageURL = imageURL;
         this.timestamp = timestamp;
