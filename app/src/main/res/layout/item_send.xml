@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/sentEmotion"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:visibility="gone"

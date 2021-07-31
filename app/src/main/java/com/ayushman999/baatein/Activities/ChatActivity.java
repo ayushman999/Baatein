@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 
 public class ChatActivity extends AppCompatActivity {
@@ -44,20 +45,29 @@ public class ChatActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle(name);
         binding.sendButton.setOnClickListener(v -> {
-            Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
             String messageText=binding.messageBox.getText().toString();
+            String randomKey=database.getReference().push().getKey();
             binding.messageBox.setText("");
             Date date=new Date();
-            Message message=new Message(messageText,senderUID,date.getTime());
+            HashMap<String,Object> lastMessage=new HashMap<>();
+            lastMessage.put("lastMessage",messageText);
+            lastMessage.put("lastMessageTime",date.getTime());
+            database.getReference().child("Chats")
+                    .child(senderRoom)
+                    .updateChildren(lastMessage);
+            database.getReference().child("Chats")
+                    .child(receiverRoom)
+                    .updateChildren(lastMessage);
+            Message message=new Message(messageText,receiverUID,date.getTime());
             database.getReference().child("Chats").child(senderRoom)
                     .child("messages")
-                    .push()
+                    .child(randomKey)
                     .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
                     database.getReference().child("Chats").child(receiverRoom)
                             .child("messages")
-                            .push()
+                            .child(randomKey)
                             .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
@@ -71,7 +81,7 @@ public class ChatActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         messages=new ArrayList<>();
-        adapter=new MessagesAdapter(this,messages);
+        adapter=new MessagesAdapter(this,messages,senderRoom,receiverRoom);
         binding.recyclerView.setAdapter(adapter);
 
         database.getReference().child("Chats")
@@ -84,6 +94,7 @@ public class ChatActivity extends AppCompatActivity {
                         if(snapshot.exists()) {
                             for (DataSnapshot ss : snapshot.getChildren()) {
                                 Message message = ss.getValue(Message.class);
+                                message.setMessageID(ss.getKey());
                                 messages.add(message);
 
                             }

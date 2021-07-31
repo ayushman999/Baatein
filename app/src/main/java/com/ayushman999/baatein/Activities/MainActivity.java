@@ -12,6 +12,7 @@ import com.ayushman999.baatein.R;
 import com.ayushman999.baatein.Models.User;
 import com.ayushman999.baatein.Adapters.UsersAdapter;
 import com.ayushman999.baatein.databinding.ActivityMainBinding;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -40,7 +41,9 @@ public class MainActivity extends AppCompatActivity {
                 for(DataSnapshot ss:snapshot.getChildren())
                 {
                     User user=ss.getValue(User.class);
-                    users.add(user);
+                    if(!user.getUid().equals(FirebaseAuth.getInstance().getUid())) {
+                        users.add(user);
+                    }
                 }
                 adapter.notifyDataSetChanged();
 

@@ -14,6 +14,13 @@ import com.ayushman999.baatein.R;
 import com.ayushman999.baatein.Models.User;
 import com.ayushman999.baatein.databinding.RowConversationBinding;
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -36,6 +43,30 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserHolder> 
     @Override
     public void onBindViewHolder(@NonNull UsersAdapter.UserHolder holder, int position) {
         User user=users.get(position);
+        String senderUID= FirebaseAuth.getInstance().getUid();
+        String senderRoom=senderUID+user.getUid();
+        FirebaseDatabase.getInstance().getReference().child("Chats")
+                .child(senderRoom)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        if(snapshot.exists())
+                        {
+                            String lastmessage=(String)snapshot.child("lastMessage").getValue(String.class);
+                            if(snapshot.child("lastMessageTime").getValue()!=null) {
+                                long time = (long) snapshot.child("lastMessageTime").getValue(Long.class);
+                            }
+                            if(lastmessage!=null) {
+                                holder.binding.lastMessage.setText(lastmessage);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                    }
+                });
         holder.binding.username.setText(user.getName());
         Glide.with(context).load(user.getProfileImg())
                 .placeholder(R.drawable.avatar)
